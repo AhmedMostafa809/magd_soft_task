@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:magd_soft_task/constants/app_colors.dart';
 import 'package:sizer/sizer.dart';
 import '../../../business_logic/help_cubit/help_cubit.dart';
+import '../../../business_logic/home_cubit/home_cubit.dart';
 import '../../../constants/end_points.dart';
 import '../../../data/data_providers/remote/dio_helper.dart';
 import '../../../data/models/help_model.dart';
@@ -30,30 +31,10 @@ class _HelpScreenState extends State<HelpScreen> {
     allHelp = BlocProvider.of<HelpCubit>(context).help();
   }
 
-  Widget buildHelpList() {
-    return BlocBuilder<HelpCubit, HelpState>(
-      builder: (context, state) {
-        if (state is HelpLoaded) {
-          allHelp = state.help;
-          return ListView.builder(itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(allHelp[index].question!),
-              subtitle: Text(allHelp[index].answer!),
-            );
-          });
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: AppColors.blue,
-            ),
-          );
-        }
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
+    final homeCubit = BlocProvider.of<HomeCubit>(context);
     return Scaffold(
       body: ListView(
         children: [
@@ -228,6 +209,7 @@ class _HelpScreenState extends State<HelpScreen> {
         padding: EdgeInsets.symmetric(horizontal: 15.0.w),
         child: DefaultButton(
             Onpressed: () {
+              homeCubit.fetchDataFromAPI();
               Navigator.pushNamed(context, AppRoutes.homeRoute);
             },
             text: "Continue",
